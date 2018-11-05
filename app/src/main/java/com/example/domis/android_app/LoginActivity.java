@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseController firebaseController;
+    private AlertDialog ad;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,24 +39,36 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println(userEmail);
                 System.out.println(userPass);
                 //do some weird firebase shit to make map appear
-                if(firebaseController.checkUserLogin(user))
-                {
-                    successLogin();
-                }
+                //successLogin(firebaseController.getUser(user));
+                firebaseController.getUser(user);
             }
         });
     }
 
-    private void successLogin() {
-        AlertDialog ad = new AlertDialog.Builder(this).create();
-        ad.setMessage("Login Successful");
-        ad.setButton(DialogInterface.BUTTON_POSITIVE, "Continue",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startMapActivity();
-                    }
-                });
+    public void successLogin(boolean success) {
+        ad = new AlertDialog.Builder(this).create();
+        if(success)
+        {
+            ad.setMessage("Login Successful");
+            ad.setButton(DialogInterface.BUTTON_POSITIVE, "Continue",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startMapActivity();
+                        }
+                    });
+        }
+        else
+        {
+            ad.setMessage("Login Failed");
+            ad.setButton(DialogInterface.BUTTON_POSITIVE, "Continue",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ad.cancel();
+                        }
+                    });
+        }
         ad.show();
     }
 

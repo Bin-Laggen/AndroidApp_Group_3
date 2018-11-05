@@ -10,6 +10,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class FirebaseController {
 
@@ -20,6 +22,7 @@ public class FirebaseController {
     private User tmpUser;
     private FutureTask<Void> ft;
     private ExecutorService es;
+    private boolean success;
 
     public static FirebaseController getInstance() {
         return ourInstance;
@@ -34,12 +37,12 @@ public class FirebaseController {
             }
         }, null);
         es = Executors.newFixedThreadPool(1);
-        getUserList();
+        //getUserList();
     }
 
     public boolean checkUserLogin(User user) {
-
-        if(getUser(user) != null)
+        //getUserList();
+        if(user != null)
         {
             return true;
         }
@@ -72,7 +75,7 @@ public class FirebaseController {
 
     public boolean registerUser(User user)
     {
-        getUserList();
+        //getUserList();
         System.out.println("Number of users: " + userList.size());
         int indexOfAt = user.getUsername().indexOf("@");
         String userID = user.getUsername().substring(0, indexOfAt);
@@ -91,33 +94,48 @@ public class FirebaseController {
         }
     }
 
-    private User getUser(User user)
+    public boolean getUser(final User user)
     {
-        tmpUser = null;
+        success = false;
+        //int indexOfAt = user.getUsername().indexOf("@");
+        //String userID = user.getUsername().substring(0, indexOfAt);
+        //userID = userID.replace(".", "");
+        String userID = user.getUsername();
+        Log.d("Search for: ", userID);
         myRef = database.getReference().child("USERS").child(user.getUsername());
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tmpUser = dataSnapshot.getValue(User.class);
-                es.execute(ft);
+                PersonalData.USER = dataSnapshot.getValue(User.class);
+                Log.e("USER.toString(): ", "===============================================\n" + tmpUser.toString());
+
+                PersonalData.validate(user.getPassword());
+                //es.execute(ft);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d("Error", "Failed To Get the user");
             }
         });
+
+        /**
         try
         {
-            ft.get();
+            ft.get(10000, TimeUnit.MILLISECONDS);
         }
         catch (Throwable e)
         {
+            Log.e("=================", "=======================");
+            Log.e("123", user.getUsername());
             e.printStackTrace();
         }
-        return tmpUser;
+         */
+
+        return success;
     }
 
+    /**
     private void getUserList() {
         userList = new HashMap<>();
 
@@ -140,14 +158,17 @@ public class FirebaseController {
 
             }
         });
+
         try
         {
-            ft.get();
+            ft.get(1000, TimeUnit.MILLISECONDS);
         }
         catch (Throwable e)
         {
             e.printStackTrace();
         }
+
     }
+     */
 }
 
