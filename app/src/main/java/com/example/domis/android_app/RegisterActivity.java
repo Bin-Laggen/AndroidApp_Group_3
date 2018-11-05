@@ -44,8 +44,8 @@ public class RegisterActivity extends AppCompatActivity {
                     ArrayList<String> userTypes = new ArrayList<String>();
                     userTypes.add("USER");
                     User user = new User(userTypes, email, pass);
-                    boolean success = fbController.registerUser(user);
-                    successRegister(success);
+                    //boolean success = fbController.registerUser(user);
+                    //successRegister(success);
                 }
             }
         });

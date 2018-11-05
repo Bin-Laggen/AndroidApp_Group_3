@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_layout);
 
         firebaseController = FirebaseController.getInstance();
+        PersonalData.LOGIN_ACTIVITY = this;
 
         final EditText emailInput = findViewById(R.id.editEmail);
         final EditText passInput = findViewById(R.id.editPass);
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println(userPass);
                 //do some weird firebase shit to make map appear
                 //successLogin(firebaseController.getUser(user));
-                firebaseController.getUser(user);
+                firebaseController.checkUserLogin(user);
             }
         });
     }
