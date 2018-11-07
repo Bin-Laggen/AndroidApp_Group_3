@@ -47,7 +47,7 @@ public class FirebaseController {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 PersonalData.USER = dataSnapshot.getValue(User.class);
-                Log.e("USER.toString(): ", "===============================================\n");
+                //Log.e("USER.toString(): ", "===============================================\n");
                 PersonalData.validate(user.getPassword());
             }
 
